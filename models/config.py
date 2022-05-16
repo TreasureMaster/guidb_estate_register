@@ -1,2 +1,2 @@
-PG_DB_NAME = 'advertising'
-SQL_INIT_FILE = 'initdb/advertising.sql'
+PG_DB_NAME = 'estate_register'
+SQL_INIT_FILE = 'initdb/estate_register.sql'
