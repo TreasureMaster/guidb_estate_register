@@ -7,7 +7,7 @@ from widgets import (
     AdminTable,
     LabeledEntry,
     ToggledEntry,
-    TreatyTable,
+    # TreatyTable,
 )
 
 from .printerwindow import PrinterDialog
@@ -98,7 +98,7 @@ class BaseSearchWindow:
 class TreatySearchWindow(BaseSearchWindow):
     """Окно поиска договора"""
     _APPTITLE = 'Поиск договора'
-    _TABLE = TreatyTable
+    # _TABLE = TreatyTable
     _ALL_WIDTH = 25
     _CONTROL_WIDGETS = {
             'customer.Customer': {

@@ -58,9 +58,9 @@ class StartWindow:
             showerror('Ошибка авторизации', collect_message(who_is))
         elif who_is['is_admin']:
             print('Переход к окну администратора')
-            self.window.withdraw()
+            # self.window.withdraw()
             AdminMainWindow(self.window, self.user)
         else:
             print('Переход к окну пользователя')
-            self.window.withdraw()
+            # self.window.withdraw()
             BuildingMainWindow(self.window)

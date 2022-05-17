@@ -40,6 +40,7 @@ class BaseMainWindow:
     """Базовое главное окно"""
     def __init__(self, mainwindow, table_model=None):
         self.mainwindow = mainwindow
+        self.mainwindow.withdraw()
         self.model = self._MODEL(PGCursor()) if table_model is None else table_model
         self.returned_entry = None
         self.data = {}
@@ -55,7 +56,7 @@ class BaseMainWindow:
 
     def _quit(self):
         """Собственная обработка выхода."""
-        # self.mainwindow.deiconify()
+        self.mainwindow.deiconify()
         self.window.destroy()
 
     def _makemenu(self, parent):
@@ -144,7 +145,7 @@ class BuildingMainWindow(BaseMainWindow):
     _CONTROL_WIDGETS = {
             '!button_1': {
                 'text': 'Кафедры',
-                'pady': 10,
+                'pady': 0,
                 'command': 'departments_view'
             },
             '!button_2': {
@@ -155,12 +156,12 @@ class BuildingMainWindow(BaseMainWindow):
             '!button_3': {
                 'text': 'Имущество',
                 'pady': 0,
-                'command': 'halls_view'
+                'command': 'units_view'
             },
             '!button_4': {
                 'text': 'Ответственные',
                 'pady': 0,
-                'command': 'halls_view'
+                'command': 'chiefs_view'
             },
             '!separator_1': 10,
             '!button_5': {
@@ -191,10 +192,10 @@ class BuildingMainWindow(BaseMainWindow):
             },
         }
 
-    def _quit(self):
-        """Собственная обработка выхода."""
-        self.mainwindow.deiconify()
-        self.window.destroy()
+    # def _quit(self):
+    #     """Собственная обработка выхода."""
+    #     self.mainwindow.deiconify()
+    #     self.window.destroy()
 
     def _makemenu(self, parent):
         # win - окно верхнего уровня
@@ -211,27 +212,28 @@ class BuildingMainWindow(BaseMainWindow):
 
     def departments_view(self):
         """Переключение на таблицу кафедр"""
-        DepartmentMainWindow(self.mainwindow)
+        # self.window.withdraw()
+        DepartmentMainWindow(self.window)
 
     def halls_view(self):
         """Переключение на таблицу помещений"""
-        HallMainWindow(self.mainwindow)
+        HallMainWindow(self.window)
 
     def units_view(self):
         """Переключение на таблицу имущества"""
-        UnitMainWindow(self.mainwindow)
+        UnitMainWindow(self.window)
 
     def chiefs_view(self):
         """Переключение на таблицу ответственных"""
-        ChiefMainWindow(self.mainwindow)
+        ChiefMainWindow(self.window)
 
     def materials_view(self):
         """Переключение на таблицу материалов стен"""
-        MaterialMainWindow(self.mainwindow)
+        MaterialMainWindow(self.window)
 
     def targets_view(self):
         """Переключение на таблицу назначения помещения"""
-        TargetMainWindow(self.mainwindow)
+        TargetMainWindow(self.window)
 
     def create_report(self):
         """Создать отчет"""
@@ -275,10 +277,10 @@ class AdminMainWindow(BaseMainWindow):
             },
         }
 
-    def _quit(self):
-        """Собственная обработка выхода."""
-        self.mainwindow.deiconify()
-        self.window.destroy()
+    # def _quit(self):
+    #     """Собственная обработка выхода."""
+    #     self.mainwindow.deiconify()
+    #     self.window.destroy()
 
     def create_report(self):
         """Создать отчет"""
@@ -431,7 +433,7 @@ class MaterialMainWindow(BaseMainWindow):
     _SEARCH_WINDOW = None
     _ALL_WIDTH = 25
     _CONTROL_WIDGETS = {
-        '!separator_1': 10,
+        # '!separator_1': 10,
         # '!button_1': {
         #     'text': 'Добавить',
         #     'pady': 10,
@@ -448,7 +450,7 @@ class MaterialMainWindow(BaseMainWindow):
         #     'command': 'update_entry'
         # },
         # '!separator_2': 10,
-        '!button_5': {
+        '!button_1': {
             'text': 'Выход',
             'pady': 10,
             'command': '_quit'
@@ -465,7 +467,7 @@ class TargetMainWindow(BaseMainWindow):
     _SEARCH_WINDOW = None
     _ALL_WIDTH = 25
     _CONTROL_WIDGETS = {
-        '!separator_1': 10,
+        # '!separator_1': 10,
             # '!button_1': {
             #     'text': 'Добавить',
             #     'pady': 10,

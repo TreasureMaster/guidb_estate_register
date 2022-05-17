@@ -120,7 +120,7 @@ class BuildingTable(BaseTable):
     """Таблица зданий"""
     _HEADERS = (
         'Название', 'Площадь', 'Адрес', 'Год постройки',
-        'Материал', 'Износ', 'Этажей', 'Фото',
+        'Материал', 'Износ (%)', 'Этажей', 'Фото',
         'Информация',
     )
     # _ALIGN = ('c', 'r', 'r', 'r', 'l', 'l')
@@ -129,7 +129,7 @@ class BuildingTable(BaseTable):
         '#2': 'Land',
         '#3': 'Address',
         '#4': 'Year',
-        '#5': 'MaterialID',
+        '#5': 'Material',
         '#6': 'Wear',
         '#7': 'Flow',
         '#8': 'Picture',
@@ -137,15 +137,15 @@ class BuildingTable(BaseTable):
     }
     # Атрибуты вида колонок
     _COLUMNS = {
-        # '#1': {'width': 70, 'anchor': tk.CENTER},
-        # '#2': {'width': 120, 'anchor': tk.E},
-        # '#3': {'width': 90, 'anchor': tk.E},
-        # '#4': {'width': 120, 'anchor': tk.E},
-        # '#5': {'width': 100, 'anchor': tk.E},
-        # '#6': {'width': 120, 'anchor': tk.E},
-        # '#7': {'width': 130, 'anchor': tk.E},
-        # '#8': {'width': 110, 'anchor': tk.E},
-        # '#9': {'width': 100, 'anchor': tk.E},
+        '#1': {'width': 140},
+        '#2': {'width': 90, 'anchor': tk.E},
+        '#3': {'width': 150},
+        '#4': {'width': 100, 'anchor': tk.CENTER},
+        '#5': {'width': 100, 'anchor': tk.E},
+        '#6': {'width': 70, 'anchor': tk.CENTER},
+        '#7': {'width': 70, 'anchor': tk.E},
+        '#8': {'width': 60, 'anchor': tk.CENTER},
+        '#9': {'width': 140},
     }
     # Отображение полей БД в человекочитаемом виде
     _DISPLAY_FIELDS = {
@@ -188,7 +188,7 @@ class DepartmentTable(BaseTable):
         'Название', 'Заведующий', 'Телефон', 'Деканат',
     )
     _INDEXES = {
-            '#1': 'departmentName',
+            '#1': 'DepartmentName',
             '#2': 'Boss',
             '#3': 'Phone',
             '#4': 'OfficeDean',
@@ -196,7 +196,7 @@ class DepartmentTable(BaseTable):
     _COLUMNS = {
         # '#1': {'width': 70, 'anchor': tk.E},
         # '#2': {'width': 50, 'anchor': tk.E},
-        # '#3': {'width': 110},
+        '#3': {'width': 120, 'anchor': tk.CENTER},
         # '#4': {'width': 110, 'anchor': tk.E},
         # '#5': {'width': 120},
         # '#6': {'width': 130, 'anchor': tk.E},
@@ -228,31 +228,34 @@ class TargetTable(BaseTable):
 class HallTable(BaseTable):
     _HEADERS = (
         'Номер', 'Площадь', 'Окна',
-        'Батареи', 'Кафедра', 'Здание',
+        'Батареи', 'Назначение',
+        'Кафедра', 'Здание',
     )
     _INDEXES = {
             '#1': 'HallNumber',
             '#2': 'HallSquare',
             '#3': 'Windows',
             '#4': 'Heaters',
-            '#5': 'DepartmentID',
-            '#6': 'KadastrID',
+            '#5': 'Target',
+            '#6': 'DepartmentName',
+            '#7': 'BuildingName',
         }
     _COLUMNS = {
-        # '#1': {'width': 110},
-        # '#2': {'width': 120, 'anchor': tk.E},
-        # '#3': {'width': 110, 'anchor': tk.E},
-        # '#4': {'width': 120},
-        # '#5': {'width': 80, 'anchor': tk.E},
-        # '#6': {'width': 80, 'anchor': tk.E},
+        '#1': {'width': 80, 'anchor': tk.CENTER},
+        '#2': {'width': 100, 'anchor': tk.E},
+        '#3': {'width': 80, 'anchor': tk.CENTER},
+        '#4': {'width': 90, 'anchor': tk.CENTER},
+        '#5': {'width': 120},
+        '#6': {'width': 150},
+        '#7': {'width': 120},
     }
     _DISPLAY_FIELDS = {}
 
 
 class UnitTable(BaseTable):
     _HEADERS = (
-        'Название', 'Дата постановки', 'Стоимость',
-        'Год переоценки', 'Цена списания', 'Срок службы',
+        'Название', 'Постановка', 'Стоимость',
+        'Переоценка', 'Списание', 'Срок службы',
         'Помещение', 'Ответственный',
     )
     _INDEXES = {
@@ -262,16 +265,18 @@ class UnitTable(BaseTable):
             '#4': 'CostYear',
             '#5': 'CostAfter',
             '#6': 'Period',
-            '#7': 'HallID',
-            '#8': 'ChiefID',
+            '#7': 'HallName',
+            '#8': 'Chief',
         }
     _COLUMNS = {
-        # '#1': {'width': 110},
-        # '#2': {'width': 120, 'anchor': tk.E},
-        # '#3': {'width': 110, 'anchor': tk.E},
-        # '#4': {'width': 120},
-        # '#5': {'width': 80, 'anchor': tk.E},
-        # '#6': {'width': 80, 'anchor': tk.E},
+        '#1': {'width': 120},
+        '#2': {'width': 90, 'anchor': tk.E},
+        '#3': {'width': 80, 'anchor': tk.E},
+        '#4': {'width': 80, 'anchor': tk.CENTER},
+        '#5': {'width': 80, 'anchor': tk.E},
+        '#6': {'width': 90, 'anchor': tk.CENTER},
+        '#7': {'width': 150},
+        '#8': {'width': 100},
     }
     _DISPLAY_FIELDS = {}
 
@@ -286,9 +291,9 @@ class ChiefTable(BaseTable):
             '#3': 'Experience',
         }
     _COLUMNS = {
-        # '#1': {'width': 110},
-        # '#2': {'width': 120, 'anchor': tk.E},
-        # '#3': {'width': 110, 'anchor': tk.E},
+        '#1': {'width': 130},
+        '#2': {'width': 150},
+        '#3': {'width': 100, 'anchor': tk.CENTER},
         # '#4': {'width': 120},
         # '#5': {'width': 80, 'anchor': tk.E},
         # '#6': {'width': 80, 'anchor': tk.E},

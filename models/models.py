@@ -32,17 +32,31 @@ class backref:
         """Весь список (для вывода списков в таблицах)"""
         return self.reference.select_all()
 
-    def get_join(self):
+    def get_join(self, field, table):
         """Добавить обратную ссылку как JOIN"""
         # Надо: JOIN {self.reference._table} ON {self.reference._table}.{self.reference._primary_key}
         # Объединять со своим Primay Key будет внешний родительский объект
-        return sql.Composed([
-            sql.SQL(' JOIN '),
-            sql.Identifier(self.reference._table),
-            sql.SQL(' ON '),
-            sql.Identifier(self.reference._table, self.reference._primary_key),
-            sql.SQL('=')
-        ])
+        refs = [
+            sql.Composed([
+                sql.SQL(' JOIN '),
+                sql.Identifier(self.reference._table),
+                sql.SQL(' ON '),
+                sql.Identifier(self.reference._table, self.reference._primary_key),
+                sql.SQL('='),
+                sql.Identifier(table, field)
+            ])
+        ]
+        # refs = [b]
+        # Это уже поиск других backref в самой ссылке backref (рекурсивно)
+        # TODO слишком захламлен запрос, нужен рефакторинг рекурсивных ссылок
+        # print('ссылочная таблица:', self.reference._table)
+        for title, ref in self.reference._fields.items():
+            if isinstance(ref, backref):
+                # print(title)
+                # a = (ref.get_join(title, self.reference._table))
+                # print(a)
+                refs.append(ref.get_join(title, self.reference._table))
+        return sql.SQL('').join(refs)
 
     def get_composed(self):
         """Получение SQL-скрипта для составных полей переданной модели из backref"""
@@ -67,12 +81,21 @@ class ComposedProperty:
             composed_property['sep'] = ' '
         self.composed_property = composed_property
 
+    def prepare_identifier(self, field):
+        """Подготовка идентификатора поля с указанием таблицы"""
+        # Точка '.' в имени означает, что таблица уже указана,
+        # т.е. не надо использовать базовую таблицу, а брать ее из переданного значения
+        if '.' in field:
+            return sql.Identifier(*field.split('.'))
+        return sql.Identifier(self._table, field)
+
     def get_composed(self):
         """Получение одного SQL-скрипта для составного поля"""
         if self.composed_property['fields']:
             return sql.Composed([
                 sql.SQL(', CONCAT_WS({},').format(sql.Literal(self.composed_property['sep'])),
-                sql.SQL(', ').join(map(lambda s: sql.Identifier(self._table, s), self.composed_property['fields'])),
+                # sql.SQL(', ').join(map(lambda s: sql.Identifier(self._table, s), self.composed_property['fields'])),
+                sql.SQL(', ').join(map(self.prepare_identifier, self.composed_property['fields'])),
                 sql.SQL(') AS {} ').format(sql.Identifier(self.composed_property['title']))
             ])
             # print('in composed:', a.as_string(self.reference._connection.connection))
@@ -347,15 +370,17 @@ class BaseModel:
 
     def get_all_join(self):
         """Скомпоновать все JOIN"""
-        return sql.SQL(' ').join(map(
-            lambda f: sql.Composed([f[1], sql.Identifier(self._table, f[0])]),
+        return sql.SQL(' ').join(#map(
+            # lambda f: sql.Composed([f[1], sql.Identifier(self._table, f[0])]),
             (
-                (field, entity.get_join())
+                # (field, entity.get_join())
+                entity.get_join(field, self._table)
                 for field, entity in self._fields.items()
                 if isinstance(entity, backref)
             )
-        ))
+        )#)
         # print('---> join:', f'"{a.as_string(self._connection.connection)}"')
+        # return a
 
     def get_backref_composed(self):
         """Получить запрос для составных элементов backref"""
@@ -496,6 +521,7 @@ class HallModel(BaseModel):
         'HallSquare': RequiredField(),
         'Windows': RequiredField(),
         'Heaters': RequiredField(),
+        'TargetID': backref(TargetModel),
         'DepartmentID': backref(DepartmentModel),
         'KadastrID': backref(BuildingModel),
     }
@@ -563,6 +589,18 @@ class UnitModel(BaseModel):
         'Period': RequiredField(),
         'HallID': backref(HallModel),
         'ChiefID': backref(ChiefModel),
+        'HallName': ComposedProperty(
+            # из какой таблицы брать
+            'halls',
+            {
+                # название свойства, с которым оно будет возвращаться из БД
+                'title': 'HallName',
+                # объединяемые поля в псоледовательности объединения
+                'fields': ('HallNumber', 'targets.Target', 'buildings.BuildingName'),# 'HouseNumber'),
+                # разделитель полей при объединении (по умолчанию - пробел)
+                'sep': ', ',
+            }
+        ),
     }
     # class ValidateSchema(mm.Schema):
     #     """Схема валидации модели."""
