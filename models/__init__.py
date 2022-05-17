@@ -1,9 +1,11 @@
 from .db import PGCursor, db_init
 from .models import (
-    BillboardModel,
-    CustomerModel,
-    EmployeeModel,
-    PeriodModel,
-    TreatyModel,
+    BuildingModel,
+    ChiefModel,
+    DepartmentModel,
+    HallModel,
+    MaterialModel,
+    TargetModel,
+    UnitModel,
     UserModel,
 )

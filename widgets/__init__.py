@@ -1,11 +1,13 @@
 from .comboboxdict import ComboboxDict
 from .tables import (
     AdminTable,
-    BillboardTable,
-    CustomerTable,
-    EmployeeTable,
-    PeriodTable,
-    TreatyTable,
+    BuildingTable,
+    ChiefTable,
+    DepartmentTable,
+    HallTable,
+    MaterialTable,
+    TargetTable,
+    UnitTable,
 )
 from .entries import (
     BaseCustomEntry,
