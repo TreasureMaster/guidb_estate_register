@@ -248,10 +248,8 @@ class BaseModel:
         # подготовка данных
         input_fields = self.clean_input_fields(input_fields)
         input_fields = self.for_create(input_fields)
-        # if '!error' in input_fields:
         if identify_error(input_fields):
             return input_fields
-        # errors = self.validate(input_fields)
         if errors := self.validate(input_fields):
             return errors
         if 'Password' in input_fields:
@@ -273,7 +271,6 @@ class BaseModel:
             }
         input_fields = self.clean_input_fields(input_fields)
         input_fields = self.for_update(input_fields)
-        # if '!error' in input_fields:
         if identify_error(input_fields):
             return input_fields
         if errors := self.validate(input_fields, partial=True):
@@ -438,124 +435,147 @@ class UserModel(BaseModel):
         return super().create(**input_fields)
 
 
-class EmployeeModel(BaseModel):
-    """Модель ответственного от агенства"""
-    _table = 'employees'
-    _entity_name = 'Ответственный'
-    _primary_key = 'IDEmployee'
+class MaterialModel(BaseModel):
+    """Модель материала здания"""
+    _table = 'materials'
+    _entity_name = 'Материал'
+    _primary_key = 'IDMaterial'
     _fields = {
-        'Employee': RequiredField(),
+        'Material': RequiredField(),
     }
 
 
-class PeriodModel(BaseModel):
-    """Модель периодов оплаты"""
-    _table = 'periods'
-    _entity_name = 'Период оплаты'
-    _primary_key = 'IDPeriod'
+class TargetModel(BaseModel):
+    """Модель назначения помещения"""
+    _table = 'targets'
+    _entity_name = 'Тип помещения'
+    _primary_key = 'IDTarget'
     _fields = {
-        'Period': RequiredField(),
+        'Target': RequiredField(),
     }
 
 
-class CustomerModel(BaseModel):
-    """Модель арендатора"""
-    _table = 'customer'
-    _entity_name = 'Арендатор'
-    _primary_key = 'IDCustomer'
+class DepartmentModel(BaseModel):
+    """Модель кафедры"""
+    _table = 'departments'
+    _entity_name = 'Кафедра'
+    _primary_key = 'IDDepartment'
     _fields = {
-        'INN': RequiredField(),
-        'Status': RequiredField(),
-        'Customer': RequiredField(),
-        'AddressCust': RequiredField(),
-        'Bank': RequiredField(),
-        'Account': RequiredField(),
-        'Tax': RequiredField(),
-        'Chief': RequiredField(),
+        'DepartmentName': RequiredField(),
+        'Boss': RequiredField(),
         'Phone': RequiredField(),
+        'OfficeDean': RequiredField(),
     }
-    class ValidateSchema(mm.Schema):
-        """Схема валидации модели."""
-        INN = mm.fields.Integer(required=True)
-        Status = mm.fields.String(required=True)
-        Customer = mm.fields.String(required=True)
-        AddressCust = mm.fields.String(required=True)
-        Bank = mm.fields.String(required=True)
-        # Account = mm.fields.String(required=True, validate=mmv.Length(equal=20))
-        Account = mm.fields.String(required=True)
-        Tax = mm.fields.String(required=True)
-        Chief = mm.fields.String(required=True)
-        Phone = mm.fields.String(required=True)
 
-        @mm.validates('Account')
-        def validate_account(self, value):
-            if not value.isdigit():
-                raise mm.ValidationError('принимаются только цифры')
-            elif len(value) != 20:
-                raise mm.ValidationError('длина должна быть точно 20 символов')
 
-        @mm.validates('INN')
-        def validate_inn(self, value):
-            if not (9 < len(str(value)) < 13):
-                raise mm.ValidationError('длина ИНН 10 или 12 цифр')
-
-        @mm.validates('Phone')
-        def validate_phone(self, value):
-            if set(value) - set('0123456789-()+ '):
-                raise mm.ValidationError('недопустимый символ')
-
-class BillboardModel(BaseModel):
-    """Модель рекламного щита"""
-    _table = 'billboard'
-    _entity_name = 'Щит'
-    _primary_key = 'IDBillboard'
+class BuildingModel(BaseModel):
+    """Модель здания"""
+    _table = 'buildings'
+    _entity_name = 'Здание'
+    _primary_key = 'IDKadastr'
     _fields = {
+        'BuildingName': RequiredField(),
+        'Land': RequiredField(),
         'Address': RequiredField(),
-        'Orientation': RequiredField(),
-        'Square': RequiredField(),
-        'District': RequiredField(),
-        'Size': RequiredField(),
+        'Year': RequiredField(),
+        'Wear': RequiredField(),
+        'Flow': RequiredField(),
         'Picture': None,
+        'Comment': None,
+        'MaterialID': backref(MaterialModel),
     }
-    class ValidateSchema(mm.Schema):
-        """Схема валидации модели."""
-        Address = mm.fields.String(required=True)
-        Orientation = mm.fields.String(required=True)
-        Square = mm.fields.Float(required=True)
-        District = mm.fields.String(required=True)
-        Size = mm.fields.String(required=True)
-        Picture = mm.fields.String(allow_none=True)
 
 
-class TreatyModel(BaseModel):
-    """Модель договора"""
-    _table = 'treaty'
-    _entity_name = 'Договор'
-    _primary_key = 'IDTreaty'
+class HallModel(BaseModel):
+    """Модель помещения"""
+    _table = 'halls'
+    _entity_name = 'Помещение'
+    _primary_key = 'IDHall'
     _fields = {
-        'DateStart': RequiredField(),
-        'StopDate': RequiredField(),
-        'SignDate': RequiredField(),
-        'Advertisement': RequiredField(),
-        'Cost': RequiredField(),
-        'Leasing': RequiredField(),
-        'PeriodID': backref(PeriodModel),
-        'EmployeeID': backref(EmployeeModel),
-        'BillboardID': backref(BillboardModel),
-        'CustomerID': backref(CustomerModel),
+        'HallNumber': RequiredField(),
+        'HallSquare': RequiredField(),
+        'Windows': RequiredField(),
+        'Heaters': RequiredField(),
+        'DepartmentID': backref(DepartmentModel),
+        'KadastrID': backref(BuildingModel),
     }
-    class ValidateSchema(mm.Schema):
-        """Схема валидации модели."""
-        DateStart = mm.fields.Date(required=True)
-        StopDate = mm.fields.Date(required=True)
-        SignDate = mm.fields.Date(required=True)
-        Advertisement = mm.fields.Boolean(required=True)
-        Cost = mm.fields.Float(required=True)
-        Leasing = mm.fields.Float(required=True)
-        PeriodID = mm.fields.Integer(required=True)
-        EmployeeID = mm.fields.Integer(required=True)
-        BillboardID = mm.fields.Integer(required=True)
-        CustomerID = mm.fields.Integer(required=True)
+    # class ValidateSchema(mm.Schema):
+    #     """Схема валидации модели."""
+    #     INN = mm.fields.Integer(required=True)
+    #     Status = mm.fields.String(required=True)
+    #     Customer = mm.fields.String(required=True)
+    #     AddressCust = mm.fields.String(required=True)
+    #     Bank = mm.fields.String(required=True)
+    #     # Account = mm.fields.String(required=True, validate=mmv.Length(equal=20))
+    #     Account = mm.fields.String(required=True)
+    #     Tax = mm.fields.String(required=True)
+    #     Chief = mm.fields.String(required=True)
+    #     Phone = mm.fields.String(required=True)
+
+    #     @mm.validates('Account')
+    #     def validate_account(self, value):
+    #         if not value.isdigit():
+    #             raise mm.ValidationError('принимаются только цифры')
+    #         elif len(value) != 20:
+    #             raise mm.ValidationError('длина должна быть точно 20 символов')
+
+    #     @mm.validates('INN')
+    #     def validate_inn(self, value):
+    #         if not (9 < len(str(value)) < 13):
+    #             raise mm.ValidationError('длина ИНН 10 или 12 цифр')
+
+    #     @mm.validates('Phone')
+    #     def validate_phone(self, value):
+    #         if set(value) - set('0123456789-()+ '):
+    #             raise mm.ValidationError('недопустимый символ')
+
+class ChiefModel(BaseModel):
+    """Модель ответственного"""
+    _table = 'chiefs'
+    _entity_name = 'Ответственный'
+    _primary_key = 'IDChief'
+    _fields = {
+        'Chief': RequiredField(),
+        'AddressChief': RequiredField(),
+        'Experience': RequiredField(),
+    }
+    # class ValidateSchema(mm.Schema):
+    #     """Схема валидации модели."""
+    #     Address = mm.fields.String(required=True)
+    #     Orientation = mm.fields.String(required=True)
+    #     Square = mm.fields.Float(required=True)
+    #     District = mm.fields.String(required=True)
+    #     Size = mm.fields.String(required=True)
+    #     Picture = mm.fields.String(allow_none=True)
+
+
+class UnitModel(BaseModel):
+    """Модель имущества"""
+    _table = 'units'
+    _entity_name = 'Имущество'
+    _primary_key = 'IDUnit'
+    _fields = {
+        'UnitName': RequiredField(),
+        'DateStart': RequiredField(),
+        'Cost': RequiredField(),
+        'CostYear': RequiredField(),
+        'CostAfter': RequiredField(),
+        'Period': RequiredField(),
+        'HallID': backref(HallModel),
+        'ChiefID': backref(ChiefModel),
+    }
+    # class ValidateSchema(mm.Schema):
+    #     """Схема валидации модели."""
+    #     DateStart = mm.fields.Date(required=True)
+    #     StopDate = mm.fields.Date(required=True)
+    #     SignDate = mm.fields.Date(required=True)
+    #     Advertisement = mm.fields.Boolean(required=True)
+    #     Cost = mm.fields.Float(required=True)
+    #     Leasing = mm.fields.Float(required=True)
+    #     PeriodID = mm.fields.Integer(required=True)
+    #     EmployeeID = mm.fields.Integer(required=True)
+    #     BillboardID = mm.fields.Integer(required=True)
+    #     CustomerID = mm.fields.Integer(required=True)
 
 
 if __name__ == '__main__':
