@@ -48,7 +48,7 @@ class StartWindow:
 
     def get_user(self):
         """Получение данных пользователя при входе"""
-        from windows import AdminMainWindow, TreatyMainWindow
+        from windows import AdminMainWindow, BuildingMainWindow
         who_is = self.user.sign_in(
             self.login.get(),
             self.password.get()
@@ -63,4 +63,4 @@ class StartWindow:
         else:
             print('Переход к окну пользователя')
             self.window.withdraw()
-            TreatyMainWindow(self.window)
+            BuildingMainWindow(self.window)

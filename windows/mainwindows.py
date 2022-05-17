@@ -5,20 +5,24 @@ from prettytable import PrettyTable
 
 from models import (
     PGCursor,
-    BillboardModel,
-    CustomerModel,
-    EmployeeModel,
-    PeriodModel,
-    TreatyModel,
+    BuildingModel,
+    ChiefModel,
+    DepartmentModel,
+    HallModel,
+    MaterialModel,
+    TargetModel,
+    UnitModel,
     UserModel,
 )
 from widgets import (
     AdminTable,
-    BillboardTable,
-    CustomerTable,
-    EmployeeTable,
-    PeriodTable,
-    TreatyTable,
+    BuildingTable,
+    ChiefTable,
+    DepartmentTable,
+    HallTable,
+    MaterialTable,
+    TargetTable,
+    UnitTable,
 )
 from .editwindows import (
     AdminEditWindow,
@@ -129,40 +133,50 @@ class BaseMainWindow:
         return self.temp_filename
 
 
-class TreatyMainWindow(BaseMainWindow):
-    """Базовое окно договоров"""
-    _APPTITLE = 'Договор'
-    _MODEL = TreatyModel
-    _TABLE = TreatyTable
-    _EDIT_WINDOW = TreatyEditWindow
-    _SEARCH_WINDOW = TreatySearchWindow
+class BuildingMainWindow(BaseMainWindow):
+    """Базовое окно зданий"""
+    _APPTITLE = 'Здания'
+    _MODEL = BuildingModel
+    _TABLE = BuildingTable
+    # _EDIT_WINDOW = TreatyEditWindow
+    # _SEARCH_WINDOW = TreatySearchWindow
     _ALL_WIDTH = 25
     _CONTROL_WIDGETS = {
             '!button_1': {
-                'text': 'Арендатор',
+                'text': 'Кафедры',
                 'pady': 10,
-                'command': 'customers_view'
+                'command': 'departments_view'
             },
             '!button_2': {
-                'text': 'Рекламный щит',
+                'text': 'Аудитории',
                 'pady': 0,
-                'command': 'billboards_view'
+                'command': 'halls_view'
+            },
+            '!button_3': {
+                'text': 'Имущество',
+                'pady': 0,
+                'command': 'halls_view'
+            },
+            '!button_4': {
+                'text': 'Ответственные',
+                'pady': 0,
+                'command': 'halls_view'
             },
             '!separator_1': 10,
-            '!button_3': {
+            '!button_5': {
                 'text': 'Добавить',
                 'pady': 0,
                 'command': 'create_entry'
             },
-            '!button_4': {
+            '!button_6': {
+                'text': 'Изменить',
+                'pady': 20,
+                'command': 'update_entry'
+            },
+            '!button_7': {
                 'text': 'Удалить',
                 'pady': 0,
                 'command': 'delete_entry'
-            },
-            '!button_5': {
-                'text': 'Редактировать',
-                'pady': 20,
-                'command': 'update_entry'
             },
             '!separator_2': 10,
             '!button_6': {
@@ -170,7 +184,7 @@ class TreatyMainWindow(BaseMainWindow):
                 'pady': 0,
                 'command': 'search_entry'
             },
-            '!button_7': {
+            '!button_8': {
                 'text': 'Отчет',
                 'pady': 10,
                 'command': 'create_report'
@@ -189,27 +203,35 @@ class TreatyMainWindow(BaseMainWindow):
         parent.config(menu=top)
 
         tables = tk.Menu(top, tearoff=False)
-        tables.add_command(label='Ответственный', command=self.employees_view, underline=0)
-        tables.add_command(label='Период оплаты', command=self.periods_view, underline=0)
+        tables.add_command(label='Материал стен', command=self.materials_view, underline=0)
+        tables.add_command(label='Назначение помещения', command=self.targets_view, underline=0)
         tables.add_separator()
         tables.add_command(label='Выход', command=self._quit, underline=0)
         top.add_cascade(label='Справочные таблицы', menu=tables, underline=0)
 
-    def customers_view(self):
-        """Переключение на таблицу арендаторов"""
-        CustomerMainWindow(self.mainwindow)
+    def departments_view(self):
+        """Переключение на таблицу кафедр"""
+        DepartmentMainWindow(self.mainwindow)
 
-    def billboards_view(self):
-        """Переключение на таблицу рекламных щитов"""
-        BillboardMainWindow(self.mainwindow)
+    def halls_view(self):
+        """Переключение на таблицу помещений"""
+        HallMainWindow(self.mainwindow)
 
-    def employees_view(self):
-        """Переключение на таблицу ответственных работников"""
-        EmployeeMainWindow(self.mainwindow)
+    def units_view(self):
+        """Переключение на таблицу имущества"""
+        UnitMainWindow(self.mainwindow)
 
-    def periods_view(self):
-        """Переключение на таблицу периодов оплаты"""
-        PeriodMainWindow(self.mainwindow)
+    def chiefs_view(self):
+        """Переключение на таблицу ответственных"""
+        ChiefMainWindow(self.mainwindow)
+
+    def materials_view(self):
+        """Переключение на таблицу материалов стен"""
+        MaterialMainWindow(self.mainwindow)
+
+    def targets_view(self):
+        """Переключение на таблицу назначения помещения"""
+        TargetMainWindow(self.mainwindow)
 
     def create_report(self):
         """Создать отчет"""
@@ -263,12 +285,12 @@ class AdminMainWindow(BaseMainWindow):
         PrinterDialog(self.window, print_text=self.get_print_file())
 
 
-class BillboardMainWindow(BaseMainWindow):
-    """Базовое окно рекламного щита"""
-    _APPTITLE = 'Рекламный щит'
-    _MODEL = BillboardModel
-    _TABLE = BillboardTable
-    _EDIT_WINDOW = BillboardEditWindow
+class DepartmentMainWindow(BaseMainWindow):
+    """Базовое окно кафедр"""
+    _APPTITLE = 'Кафедра'
+    _MODEL = DepartmentModel
+    _TABLE = DepartmentTable
+    # _EDIT_WINDOW = BillboardEditWindow
     # _SEARCH_WINDOW = RouteSearchWindow
     _SEARCH_WINDOW = None
     _ALL_WIDTH = 25
@@ -280,14 +302,14 @@ class BillboardMainWindow(BaseMainWindow):
                 'command': 'create_entry'
             },
             '!button_2': {
-                'text': 'Удалить',
-                'pady': 0,
-                'command': 'delete_entry'
-            },
-            '!button_3': {
                 'text': 'Изменить',
                 'pady': 20,
                 'command': 'update_entry'
+            },
+            '!button_3': {
+                'text': 'Удалить',
+                'pady': 0,
+                'command': 'delete_entry'
             },
             '!separator_2': 10,
             '!button_5': {
@@ -298,13 +320,12 @@ class BillboardMainWindow(BaseMainWindow):
         }
 
 
-class CustomerMainWindow(BaseMainWindow):
-    """Базовое окно арендаторов"""
-    _APPTITLE = 'Арендаторы'
-    _MODEL = CustomerModel
-    _TABLE = CustomerTable
-    _EDIT_WINDOW = CustomerEditWindow
-    # _SEARCH_WINDOW = RouteSearchWindow
+class HallMainWindow(BaseMainWindow):
+    """Базовое окно помещения"""
+    _APPTITLE = 'Помещение'
+    _MODEL = HallModel
+    _TABLE = HallTable
+    # _EDIT_WINDOW = CustomerEditWindow
     _SEARCH_WINDOW = None
     _ALL_WIDTH = 25
     _CONTROL_WIDGETS = {
@@ -315,14 +336,14 @@ class CustomerMainWindow(BaseMainWindow):
                 'command': 'create_entry'
             },
             '!button_2': {
-                'text': 'Удалить',
-                'pady': 0,
-                'command': 'delete_entry'
-            },
-            '!button_3': {
                 'text': 'Изменить',
                 'pady': 20,
                 'command': 'update_entry'
+            },
+            '!button_3': {
+                'text': 'Удалить',
+                'pady': 0,
+                'command': 'delete_entry'
             },
             '!separator_2': 10,
             '!button_5': {
@@ -333,13 +354,12 @@ class CustomerMainWindow(BaseMainWindow):
         }
 
 
-class EmployeeMainWindow(BaseMainWindow):
-    """Справочное окно отвественных работников"""
-    _APPTITLE = 'Справочная таблица "Ответственные от агенства"'
-    _MODEL = EmployeeModel
-    _TABLE = EmployeeTable
-    _EDIT_WINDOW = EmployeeEditWindow
-    # _SEARCH_WINDOW = RouteSearchWindow
+class UnitMainWindow(BaseMainWindow):
+    """Базовое окно имущеста"""
+    _APPTITLE = 'Имущество'
+    _MODEL = UnitModel
+    _TABLE = UnitTable
+    # _EDIT_WINDOW = CustomerEditWindow
     _SEARCH_WINDOW = None
     _ALL_WIDTH = 25
     _CONTROL_WIDGETS = {
@@ -350,14 +370,14 @@ class EmployeeMainWindow(BaseMainWindow):
                 'command': 'create_entry'
             },
             '!button_2': {
-                'text': 'Удалить',
-                'pady': 0,
-                'command': 'delete_entry'
-            },
-            '!button_3': {
                 'text': 'Изменить',
                 'pady': 20,
                 'command': 'update_entry'
+            },
+            '!button_3': {
+                'text': 'Удалить',
+                'pady': 0,
+                'command': 'delete_entry'
             },
             '!separator_2': 10,
             '!button_5': {
@@ -368,13 +388,12 @@ class EmployeeMainWindow(BaseMainWindow):
         }
 
 
-class PeriodMainWindow(BaseMainWindow):
-    """Справочное окно периодов оплаты"""
-    _APPTITLE = 'Справочная таблица "Периоды оплаты"'
-    _MODEL = PeriodModel
-    _TABLE = PeriodTable
-    _EDIT_WINDOW = PeriodEditWindow
-    # _SEARCH_WINDOW = RouteSearchWindow
+class ChiefMainWindow(BaseMainWindow):
+    """Базовое окно ответственных"""
+    _APPTITLE = 'Ответственные за имущество'
+    _MODEL = ChiefModel
+    _TABLE = ChiefTable
+    # _EDIT_WINDOW = CustomerEditWindow
     _SEARCH_WINDOW = None
     _ALL_WIDTH = 25
     _CONTROL_WIDGETS = {
@@ -385,17 +404,85 @@ class PeriodMainWindow(BaseMainWindow):
                 'command': 'create_entry'
             },
             '!button_2': {
-                'text': 'Удалить',
-                'pady': 0,
-                'command': 'delete_entry'
-            },
-            '!button_3': {
                 'text': 'Изменить',
                 'pady': 20,
                 'command': 'update_entry'
             },
+            '!button_3': {
+                'text': 'Удалить',
+                'pady': 0,
+                'command': 'delete_entry'
+            },
             '!separator_2': 10,
             '!button_5': {
+                'text': 'Выход',
+                'pady': 10,
+                'command': '_quit'
+            },
+        }
+
+
+class MaterialMainWindow(BaseMainWindow):
+    """Справочное окно материалов здания"""
+    _APPTITLE = 'Справочная таблица "Материал здания"'
+    _MODEL = MaterialModel
+    _TABLE = MaterialTable
+    _EDIT_WINDOW = None
+    _SEARCH_WINDOW = None
+    _ALL_WIDTH = 25
+    _CONTROL_WIDGETS = {
+        '!separator_1': 10,
+        # '!button_1': {
+        #     'text': 'Добавить',
+        #     'pady': 10,
+        #     'command': 'create_entry'
+        # },
+        # '!button_2': {
+        #     'text': 'Удалить',
+        #     'pady': 0,
+        #     'command': 'delete_entry'
+        # },
+        # '!button_3': {
+        #     'text': 'Изменить',
+        #     'pady': 20,
+        #     'command': 'update_entry'
+        # },
+        # '!separator_2': 10,
+        '!button_5': {
+            'text': 'Выход',
+            'pady': 10,
+            'command': '_quit'
+        },
+    }
+
+
+class TargetMainWindow(BaseMainWindow):
+    """Справочное окно назначения помещения"""
+    _APPTITLE = 'Справочная таблица "Назначение помещения"'
+    _MODEL = TargetModel
+    _TABLE = TargetTable
+    _EDIT_WINDOW = None
+    _SEARCH_WINDOW = None
+    _ALL_WIDTH = 25
+    _CONTROL_WIDGETS = {
+        '!separator_1': 10,
+            # '!button_1': {
+            #     'text': 'Добавить',
+            #     'pady': 10,
+            #     'command': 'create_entry'
+            # },
+            # '!button_2': {
+            #     'text': 'Удалить',
+            #     'pady': 0,
+            #     'command': 'delete_entry'
+            # },
+            # '!button_3': {
+            #     'text': 'Изменить',
+            #     'pady': 20,
+            #     'command': 'update_entry'
+            # },
+            # '!separator_2': 10,
+            '!button_1': {
                 'text': 'Выход',
                 'pady': 10,
                 'command': '_quit'
