@@ -275,7 +275,7 @@ class UnitTable(BaseTable):
         '#4': {'width': 80, 'anchor': tk.CENTER},
         '#5': {'width': 80, 'anchor': tk.E},
         '#6': {'width': 90, 'anchor': tk.CENTER},
-        '#7': {'width': 150},
+        '#7': {'width': 160},
         '#8': {'width': 100},
     }
     _DISPLAY_FIELDS = {}

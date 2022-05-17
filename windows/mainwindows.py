@@ -26,11 +26,11 @@ from widgets import (
 )
 from .editwindows import (
     AdminEditWindow,
-    BillboardEditWindow,
-    CustomerEditWindow,
-    EmployeeEditWindow,
-    PeriodEditWindow,
-    TreatyEditWindow,
+    BuildingEditWindow,
+    ChiefEditWindow,
+    DepartmentEditWindow,
+    HallEditWindow,
+    UnitEditWindow,
 )
 from .searchwindows import TreatySearchWindow, AdminSearchWindow
 from .printerwindow import PrinterDialog
@@ -139,7 +139,7 @@ class BuildingMainWindow(BaseMainWindow):
     _APPTITLE = 'Здания'
     _MODEL = BuildingModel
     _TABLE = BuildingTable
-    # _EDIT_WINDOW = TreatyEditWindow
+    _EDIT_WINDOW = BuildingEditWindow
     # _SEARCH_WINDOW = TreatySearchWindow
     _ALL_WIDTH = 25
     _CONTROL_WIDGETS = {
@@ -180,12 +180,12 @@ class BuildingMainWindow(BaseMainWindow):
                 'command': 'delete_entry'
             },
             '!separator_2': 10,
-            '!button_6': {
+            '!button_8': {
                 'text': 'Поиск',
                 'pady': 0,
                 'command': 'search_entry'
             },
-            '!button_8': {
+            '!button_9': {
                 'text': 'Отчет',
                 'pady': 10,
                 'command': 'create_report'
@@ -292,7 +292,7 @@ class DepartmentMainWindow(BaseMainWindow):
     _APPTITLE = 'Кафедра'
     _MODEL = DepartmentModel
     _TABLE = DepartmentTable
-    # _EDIT_WINDOW = BillboardEditWindow
+    _EDIT_WINDOW = DepartmentEditWindow
     # _SEARCH_WINDOW = RouteSearchWindow
     _SEARCH_WINDOW = None
     _ALL_WIDTH = 25
@@ -327,7 +327,7 @@ class HallMainWindow(BaseMainWindow):
     _APPTITLE = 'Помещение'
     _MODEL = HallModel
     _TABLE = HallTable
-    # _EDIT_WINDOW = CustomerEditWindow
+    _EDIT_WINDOW = HallEditWindow
     _SEARCH_WINDOW = None
     _ALL_WIDTH = 25
     _CONTROL_WIDGETS = {
@@ -361,7 +361,7 @@ class UnitMainWindow(BaseMainWindow):
     _APPTITLE = 'Имущество'
     _MODEL = UnitModel
     _TABLE = UnitTable
-    # _EDIT_WINDOW = CustomerEditWindow
+    _EDIT_WINDOW = UnitEditWindow
     _SEARCH_WINDOW = None
     _ALL_WIDTH = 25
     _CONTROL_WIDGETS = {
@@ -395,7 +395,7 @@ class ChiefMainWindow(BaseMainWindow):
     _APPTITLE = 'Ответственные за имущество'
     _MODEL = ChiefModel
     _TABLE = ChiefTable
-    # _EDIT_WINDOW = CustomerEditWindow
+    _EDIT_WINDOW = ChiefEditWindow
     _SEARCH_WINDOW = None
     _ALL_WIDTH = 25
     _CONTROL_WIDGETS = {

@@ -1,3 +1,4 @@
+import datetime as dt
 import hashlib
 from psycopg2 import sql
 import marshmallow as mm
@@ -491,6 +492,12 @@ class DepartmentModel(BaseModel):
         'Phone': RequiredField(),
         'OfficeDean': RequiredField(),
     }
+    class ValidateSchema(mm.Schema):
+        """Схема валидации модели."""
+        DepartmentName = mm.fields.String(required=True)
+        Boss = mm.fields.String(required=True)
+        Phone = mm.fields.Integer(required=True)
+        OfficeDean = mm.fields.String(required=True)
 
 
 class BuildingModel(BaseModel):
@@ -509,6 +516,19 @@ class BuildingModel(BaseModel):
         'Comment': None,
         'MaterialID': backref(MaterialModel),
     }
+    class ValidateSchema(mm.Schema):
+        """Схема валидации модели."""
+        BuildingName = mm.fields.String(required=True)
+        Land = mm.fields.Float(required=True)
+        Address = mm.fields.String(required=True)
+        Year = mm.fields.Integer(required=True, validate=mmv.Range(min=1600, max=dt.datetime.now().year))
+        Wear = mm.fields.Integer(required=True, validate=mmv.Range(min=0, max=100))
+        Flow = mm.fields.Integer(required=True, validate=mmv.Range(min=1, max=100))
+        Picture = mm.fields.String(allow_none=True)
+        Comment = mm.fields.String(allow_none=True)
+
+        class Meta:
+            unknown = mm.EXCLUDE
 
 
 class HallModel(BaseModel):
@@ -524,36 +544,29 @@ class HallModel(BaseModel):
         'TargetID': backref(TargetModel),
         'DepartmentID': backref(DepartmentModel),
         'KadastrID': backref(BuildingModel),
+        'HallName': ComposedProperty(
+            # из какой таблицы брать
+            _table,
+            {
+                # название свойства, с которым оно будет возвращаться из БД
+                'title': 'HallName',
+                # объединяемые поля в псоледовательности объединения
+                'fields': ('HallNumber', 'targets.Target', 'buildings.BuildingName'),# 'HouseNumber'),
+                # разделитель полей при объединении (по умолчанию - пробел)
+                'sep': ', ',
+            }
+        ),
     }
-    # class ValidateSchema(mm.Schema):
-    #     """Схема валидации модели."""
-    #     INN = mm.fields.Integer(required=True)
-    #     Status = mm.fields.String(required=True)
-    #     Customer = mm.fields.String(required=True)
-    #     AddressCust = mm.fields.String(required=True)
-    #     Bank = mm.fields.String(required=True)
-    #     # Account = mm.fields.String(required=True, validate=mmv.Length(equal=20))
-    #     Account = mm.fields.String(required=True)
-    #     Tax = mm.fields.String(required=True)
-    #     Chief = mm.fields.String(required=True)
-    #     Phone = mm.fields.String(required=True)
+    class ValidateSchema(mm.Schema):
+        """Схема валидации модели."""
+        HallNumber = mm.fields.Integer(required=True, validate=mmv.Range(min=0))
+        HallSquare = mm.fields.Float(required=True)
+        Windows = mm.fields.Integer(required=True, validate=mmv.Range(min=0))
+        Heaters = mm.fields.Integer(required=True, validate=mmv.Range(min=0))
 
-    #     @mm.validates('Account')
-    #     def validate_account(self, value):
-    #         if not value.isdigit():
-    #             raise mm.ValidationError('принимаются только цифры')
-    #         elif len(value) != 20:
-    #             raise mm.ValidationError('длина должна быть точно 20 символов')
+        class Meta:
+            unknown = mm.EXCLUDE
 
-    #     @mm.validates('INN')
-    #     def validate_inn(self, value):
-    #         if not (9 < len(str(value)) < 13):
-    #             raise mm.ValidationError('длина ИНН 10 или 12 цифр')
-
-    #     @mm.validates('Phone')
-    #     def validate_phone(self, value):
-    #         if set(value) - set('0123456789-()+ '):
-    #             raise mm.ValidationError('недопустимый символ')
 
 class ChiefModel(BaseModel):
     """Модель ответственного"""
@@ -565,14 +578,11 @@ class ChiefModel(BaseModel):
         'AddressChief': RequiredField(),
         'Experience': RequiredField(),
     }
-    # class ValidateSchema(mm.Schema):
-    #     """Схема валидации модели."""
-    #     Address = mm.fields.String(required=True)
-    #     Orientation = mm.fields.String(required=True)
-    #     Square = mm.fields.Float(required=True)
-    #     District = mm.fields.String(required=True)
-    #     Size = mm.fields.String(required=True)
-    #     Picture = mm.fields.String(allow_none=True)
+    class ValidateSchema(mm.Schema):
+        """Схема валидации модели."""
+        Chief = mm.fields.String(required=True)
+        AddressChief = mm.fields.String(required=True)
+        Experience = mm.fields.Integer(required=True, validate=mmv.Range(min=0))
 
 
 class UnitModel(BaseModel):
@@ -589,31 +599,18 @@ class UnitModel(BaseModel):
         'Period': RequiredField(),
         'HallID': backref(HallModel),
         'ChiefID': backref(ChiefModel),
-        'HallName': ComposedProperty(
-            # из какой таблицы брать
-            'halls',
-            {
-                # название свойства, с которым оно будет возвращаться из БД
-                'title': 'HallName',
-                # объединяемые поля в псоледовательности объединения
-                'fields': ('HallNumber', 'targets.Target', 'buildings.BuildingName'),# 'HouseNumber'),
-                # разделитель полей при объединении (по умолчанию - пробел)
-                'sep': ', ',
-            }
-        ),
     }
-    # class ValidateSchema(mm.Schema):
-    #     """Схема валидации модели."""
-    #     DateStart = mm.fields.Date(required=True)
-    #     StopDate = mm.fields.Date(required=True)
-    #     SignDate = mm.fields.Date(required=True)
-    #     Advertisement = mm.fields.Boolean(required=True)
-    #     Cost = mm.fields.Float(required=True)
-    #     Leasing = mm.fields.Float(required=True)
-    #     PeriodID = mm.fields.Integer(required=True)
-    #     EmployeeID = mm.fields.Integer(required=True)
-    #     BillboardID = mm.fields.Integer(required=True)
-    #     CustomerID = mm.fields.Integer(required=True)
+    class ValidateSchema(mm.Schema):
+        """Схема валидации модели."""
+        UnitName = mm.fields.String(required=True)
+        DateStart = mm.fields.Date(required=True)
+        Cost = mm.fields.Float(required=True)
+        CostYear = mm.fields.Integer(required=True, validate=mmv.Range(min=1600, max=dt.datetime.now().year))
+        CostAfter = mm.fields.Float(required=True)
+        Period = mm.fields.Integer(required=True, validate=mmv.Range(min=0))
+
+        class Meta:
+            unknown = mm.EXCLUDE
 
 
 if __name__ == '__main__':

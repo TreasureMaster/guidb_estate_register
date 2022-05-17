@@ -76,7 +76,7 @@ class BaseEditWindow:
             else:
                 entry = item['widget'](self.main_frame, **item['widget_attrs'])
                 if isinstance(entry, ttk.Spinbox):
-                    entry.configure(width=10, from_=1, to=100, state='readonly')
+                    # entry.configure(width=10, from_=1, to=100, state='readonly')
                     entry.set(1)
                 if self.current_object is not None and field != 'Password':
                     if isinstance(entry, DateEntry):
@@ -140,110 +140,85 @@ class BaseEditWindow:
                 self._quit()
 
 
-class TreatyEditWindow(BaseEditWindow):
-    """Окно редактирования договоров"""
-    _APPTITLE = 'Добавить/редактировать договор'
-    _SHOWTITLE = 'Договор'
+class BuildingEditWindow(BaseEditWindow):
+    """Окно редактирования здания"""
+    _APPTITLE = 'Добавить/редактировать здание'
+    _SHOWTITLE = 'Здание'
     _BASE_ENTRY_WIDTH = 30
     _ROWS_LIST = {
-        'IDTreaty': {
-            'title': 'Номер договора:',
-            'widget': IdEntry,
-            'widget_attrs': {
-                'entry_width': _BASE_ENTRY_WIDTH,
-                '_default_value': 0,
-            },
-        },
-        'CustomerID': {
-            'title': 'Арендатор:',
-        },
-        'DateStart': {
-            'title': 'Начало действия:',
-            'widget': DateEntry,
-            'widget_attrs': {
-                'width': 27,
-                'date_pattern': 'y-mm-dd',
-            },
-        },
-        'StopDate': {
-            'title': 'Окончание действия:',
-            'widget': DateEntry,
-            'widget_attrs': {
-                'width': 27,
-                'date_pattern': 'y-mm-dd',
-            },
-        },
-        'SignDate': {
-            'title': 'Дата подписания:',
-            'widget': DateEntry,
-            'widget_attrs': {
-                'width': 27,
-                'date_pattern': 'y-mm-dd',
-            },
-        },
-        'Advertisement': {
-            'title': 'Изготовление рекламы:',
-            'widget': CheckbuttonEntry,
-            'widget_attrs': {},
-        },
-        'Cost': {
-            'title': 'Стоимость изготовления:',
+        'BuildingName': {
+            'title': 'Название корпуса:',
             'widget': tk.Entry,
             'widget_attrs': {
                 'width': _BASE_ENTRY_WIDTH,
             },
         },
-        'Leasing': {
-            'title': 'Стоимость аренды щита:',
+        'Land': {
+            'title': 'Площадь:',
             'widget': tk.Entry,
             'widget_attrs': {
                 'width': _BASE_ENTRY_WIDTH,
             },
         },
-        'EmployeeID': {
-            'title': 'Ответственный от агенства:',
+        'Address': {
+            'title': 'Адрес:',
+            'widget': tk.Entry,
+            'widget_attrs': {
+                'width': _BASE_ENTRY_WIDTH,
+            },
         },
-        'PeriodID': {
-            'title': 'Оплата:',
+        'Year': {
+            'title': 'Год постройки:',
+            'widget': tk.Entry,
+            'widget_attrs': {
+                'width': _BASE_ENTRY_WIDTH,
+            },
         },
-        'BillboardID': {
-            'title': 'Рекламный щит:',
+        'MaterialID': {
+            'title': 'Материал стен:',
+        },
+        'Wear': {
+            'title': 'Износ (%):',
+            'widget': tk.Entry,
+            'widget_attrs': {
+                'width': _BASE_ENTRY_WIDTH,
+            },
+        },
+        'Flow': {
+            'title': 'Этажи:',
+            'widget': ttk.Spinbox,
+            'widget_attrs': {
+                'width': 10,
+                'from_': 1,
+                'to': 100,
+                'state': 'readonly'
+            },
+        },
+        'Picture': {
+            'title': 'Фото (путь):',
+            'widget': FilenameEntry,
+            'widget_attrs': {
+                'width': _BASE_ENTRY_WIDTH,
+            },
+        },
+        'Comment': {
+            'title': 'Доп. информация:',
+            'widget': tk.Entry,
+            'widget_attrs': {
+                'width': _BASE_ENTRY_WIDTH,
+            },
         },
         '!buttons_frame': None
     }
     _COMBO_LIST = {
-        'BillboardID': 'get_billboards',
-        'CustomerID': 'get_customers',
-        'EmployeeID': 'get_employees',
-        'PeriodID': 'get_periods',
+        'MaterialID': 'get_materials',
     }
 
-    def get_employees(self):
-        """Получить всех ответственных"""
+    def get_materials(self):
+        """Получить всех материалы"""
         return {
-            row['IDEmployee']: row['Employee']
-            for row in self.model._fields['EmployeeID'].select_all()
-        }
-
-    def get_customers(self):
-        """Получить всех арендаторов"""
-        return {
-            row['IDCustomer']: row['Customer']
-            for row in self.model._fields['CustomerID'].select_all()
-        }
-
-    def get_periods(self):
-        """Получить все периоды оплаты"""
-        return {
-            row['IDPeriod']: row['Period']
-            for row in self.model._fields['PeriodID'].select_all()
-        }
-
-    def get_billboards(self):
-        """Получить все номер рекламных щитов"""
-        return {
-            row['IDBillboard']: row['IDBillboard']
-            for row in self.model._fields['BillboardID'].select_all()
+            row['IDMaterial']: row['Material']
+            for row in self.model._fields['MaterialID'].select_all()
         }
 
 
@@ -273,70 +248,35 @@ class AdminEditWindow(BaseEditWindow):
     _COMBO_LIST = {}
 
 
-class CustomerEditWindow(BaseEditWindow):
-    """Окно для редактирования арендаторов"""
-    _APPTITLE = 'Создать/редактировать арендатора'
-    _SHOWTITLE = 'Арендатор'
+class DepartmentEditWindow(BaseEditWindow):
+    """Окно для редактирования кафедр"""
+    _APPTITLE = 'Добавить/редактировать кафедру'
+    _SHOWTITLE = 'Кафедра'
     _BASE_ENTRY_WIDTH = 30
     _ROWS_LIST = {
-        'INN': {
-            'title': 'ИНН арендатора:',
+        'DepartmentName': {
+            'title': 'Название кафедры:',
             'widget': tk.Entry,
             'widget_attrs': {
                 'width': _BASE_ENTRY_WIDTH,
             },
         },
-        'Status': {
-            'title': 'Статус арендатора:',
-            'widget': tk.Entry,
-            'widget_attrs': {
-                'width': _BASE_ENTRY_WIDTH,
-            },
-        },
-        'Customer': {
-            'title': 'Название:',
-            'widget': tk.Entry,
-            'widget_attrs': {
-                'width': _BASE_ENTRY_WIDTH,
-            },
-        },
-        'AddressCust': {
-            'title': 'Юридический адрес:',
-            'widget': tk.Entry,
-            'widget_attrs': {
-                'width': _BASE_ENTRY_WIDTH,
-            },
-        },
-        'Bank': {
-            'title': 'Банк:',
-            'widget': tk.Entry,
-            'widget_attrs': {
-                'width': _BASE_ENTRY_WIDTH,
-            },
-        },
-        'Account': {
-            'title': 'Номер счета:',
-            'widget': tk.Entry,
-            'widget_attrs': {
-                'width': _BASE_ENTRY_WIDTH,
-            },
-        },
-        'Tax': {
-            'title': 'Налоговая инспекция:',
-            'widget': tk.Entry,
-            'widget_attrs': {
-                'width': _BASE_ENTRY_WIDTH,
-            },
-        },
-        'Chief': {
-            'title': 'Руководитель:',
+        'Boss': {
+            'title': 'Заведующий кафедрой:',
             'widget': tk.Entry,
             'widget_attrs': {
                 'width': _BASE_ENTRY_WIDTH,
             },
         },
         'Phone': {
-            'title': 'Телефон руководителя:',
+            'title': 'Телефон кафедры:',
+            'widget': tk.Entry,
+            'widget_attrs': {
+                'width': _BASE_ENTRY_WIDTH,
+            },
+        },
+        'OfficeDean': {
+            'title': 'Деканат:',
             'widget': tk.Entry,
             'widget_attrs': {
                 'width': _BASE_ENTRY_WIDTH,
@@ -347,125 +287,178 @@ class CustomerEditWindow(BaseEditWindow):
     _COMBO_LIST = {}
 
 
-class EmployeeEditWindow(BaseEditWindow):
-    """Окно для редактирования ответственного"""
-    _APPTITLE = 'Создать/редактировать ответственного'
-    _SHOWTITLE = 'Ответственный от агенства'
+class HallEditWindow(BaseEditWindow):
+    """Окно для редактирования помещения"""
+    _APPTITLE = 'Создать/редактировать помещение'
+    _SHOWTITLE = 'Помещение'
     _BASE_ENTRY_WIDTH = 30
     _ROWS_LIST = {
-        'Employee': {
-            'title': 'Ответственный от агенства:',
+        'HallNumber': {
+            'title': 'Номер аудитории:',
             'widget': tk.Entry,
             'widget_attrs': {
                 'width': _BASE_ENTRY_WIDTH,
             },
         },
-        '!buttons_frame': None
-    }
-    _COMBO_LIST = {}
-
-
-class PeriodEditWindow(BaseEditWindow):
-    """Окно для редактирования периода оплаты"""
-    _APPTITLE = 'Создать/редактировать ответственного'
-    _SHOWTITLE = 'Период оплаты'
-    _BASE_ENTRY_WIDTH = 30
-    _ROWS_LIST = {
-        'Period': {
-            'title': 'Пеиод оплаты:',
+        'HallSquare': {
+            'title': 'Площадь аудитории:',
             'widget': tk.Entry,
             'widget_attrs': {
                 'width': _BASE_ENTRY_WIDTH,
             },
         },
-        '!buttons_frame': None
-    }
-    _COMBO_LIST = {}
-
-
-class BillboardEditWindow(BaseEditWindow):
-    """Окно для редактирования рекламного щита"""
-    _APPTITLE = 'Создать/редактировать рекламный щит'
-    _SHOWTITLE = 'Рекламный щит'
-    _WITH_PICTURE = True
-    _BASE_ENTRY_WIDTH = 30
-    _ROWS_LIST = {
-        'IDBillboard': {
-            'title': 'Номер щита:',
-            'widget': IdEntry,
-            'widget_attrs': {
-                'entry_width': _BASE_ENTRY_WIDTH,
-                '_default_value': 0,
-            },
-        },
-        # 'TreatyID': {
-        #     'title': 'Номер договора аренды:',
-        # },
-        'Address': {
-            'title': 'Адрес расположения:',
+        'Windows': {
+            'title': 'Окна:',
             'widget': tk.Entry,
             'widget_attrs': {
                 'width': _BASE_ENTRY_WIDTH,
             },
         },
-        'Orientation': {
-            'title': 'Местоположение:',
+        'Heaters': {
+            'title': 'Батареи:',
             'widget': tk.Entry,
             'widget_attrs': {
                 'width': _BASE_ENTRY_WIDTH,
             },
         },
-        'Square': {
-            'title': 'Площадь щита:',
-            'widget': tk.Entry,
-            'widget_attrs': {
-                'width': _BASE_ENTRY_WIDTH,
-            },
+        'TargetID': {
+            'title': 'Назначение:',
         },
-        'District': {
-            'title': 'Район города:',
-            'widget': tk.Entry,
-            'widget_attrs': {
-                'width': _BASE_ENTRY_WIDTH,
-            },
+        'DepartmentID': {
+            'title': 'Кафедра:',
         },
-        'Size': {
-            'title': 'Размер щита:',
-            'widget': tk.Entry,
-            'widget_attrs': {
-                'width': _BASE_ENTRY_WIDTH,
-            },
-        },
-        'Picture': {
-            'title': 'Фотография (путь):',
-            'widget': FilenameEntry,
-            'widget_attrs': {
-                'width': _BASE_ENTRY_WIDTH,
-            },
+        'KadastrID': {
+            'title': 'Здание:',
         },
         '!buttons_frame': None
     }
     _COMBO_LIST = {
-        # 'TreatyID': 'get_treaties',
-        # 'CategoryID': 'get_categories',
+        'TargetID': 'get_targets',
+        'DepartmentID': 'get_departments',
+        'KadastrID': 'get_buildings',
     }
 
-    # def get_treaties(self):
-    #     """Получить все договоры"""
-    #     return {row['IDTreaty']: row['IDTreaty'] for row in self.model._fields['TreatyID'].select_all()}
+    def get_targets(self):
+        """Получить все назначения помещений"""
+        return {
+            row['IDTarget']: row['Target']
+            for row in self.model._fields['TargetID'].select_all()
+        }
 
-    # def get_categories(self):
-    #     """Получить все категории"""
-    #     return {row['IDCategory']: row['Category'] for row in self.model._fields['CategoryID'].select_all()}
+    def get_departments(self):
+        """Получить все кафедры"""
+        return {
+            row['IDDepartment']: row['DepartmentName']
+            for row in self.model._fields['DepartmentID'].select_all()
+        }
 
-    def _make_widgets(self):
-        """Виджет с картинкой"""
-        row = len(self._ROWS_LIST)
-        if self.current_object is not None and (img := self.current_object['Picture']):
-            self.current_image = ModuleImage(self.main_frame, f'save_images/{img}')
-            self.current_image.grid(row=row, column=0, columnspan=2)
-        else:
-            self.current_image = ModuleImage(self.main_frame)
-            self.current_image.grid(row=row, column=0, columnspan=2)
+    def get_buildings(self):
+        """Получить все здания"""
+        return {
+            row['IDKadastr']: row['BuildingName']
+            for row in self.model._fields['KadastrID'].select_all()
+        }
 
-        super()._make_widgets()
+
+class ChiefEditWindow(BaseEditWindow):
+    """Окно для редактирования ответственного"""
+    _APPTITLE = 'Создать/редактировать ответственного'
+    _SHOWTITLE = 'Ответственный за имущество'
+    _BASE_ENTRY_WIDTH = 30
+    _ROWS_LIST = {
+        'Chief': {
+            'title': 'Фамилия:',
+            'widget': tk.Entry,
+            'widget_attrs': {
+                'width': _BASE_ENTRY_WIDTH,
+            },
+        },
+        'AddressChief': {
+            'title': 'Адрес проживания:',
+            'widget': tk.Entry,
+            'widget_attrs': {
+                'width': _BASE_ENTRY_WIDTH,
+            },
+        },
+        'Experience': {
+            'title': 'Годы опыта:',
+            'widget': tk.Entry,
+            'widget_attrs': {
+                'width': _BASE_ENTRY_WIDTH,
+            },
+        },
+        '!buttons_frame': None
+    }
+    _COMBO_LIST = {}
+
+
+class UnitEditWindow(BaseEditWindow):
+    """Окно для редактирования имущества"""
+    _APPTITLE = 'Создать/редактировать имущество'
+    _SHOWTITLE = 'Имущество'
+    _WITH_PICTURE = True
+    _BASE_ENTRY_WIDTH = 30
+    _ROWS_LIST = {
+        'UnitName': {
+            'title': 'Название имущества:',
+            'widget': tk.Entry,
+            'widget_attrs': {
+                'width': _BASE_ENTRY_WIDTH,
+            },
+        },
+        'DateStart': {
+            'title': 'Дата постановки:',
+            'widget': DateEntry,
+            'widget_attrs': {
+                'width': 27,
+                'date_pattern': 'y-mm-dd',
+            },
+        },
+        'Cost': {
+            'title': 'Стоимость:',
+            'widget': tk.Entry,
+            'widget_attrs': {
+                'width': _BASE_ENTRY_WIDTH,
+            },
+        },
+        'CostYear': {
+            'title': 'Год переоценки:',
+            'widget': tk.Entry,
+            'widget_attrs': {
+                'width': _BASE_ENTRY_WIDTH,
+            },
+        },
+        'CostAfter': {
+            'title': 'Стоимость списания:',
+            'widget': tk.Entry,
+            'widget_attrs': {
+                'width': _BASE_ENTRY_WIDTH,
+            },
+        },
+        'Period': {
+            'title': 'Срок службы:',
+            'widget': tk.Entry,
+            'widget_attrs': {
+                'width': _BASE_ENTRY_WIDTH,
+            },
+        },
+        'HallID': {
+            'title': 'Установлен в помещении:',
+        },
+        'ChiefID': {
+            'title': 'Ответственный:',
+        },
+        '!buttons_frame': None
+    }
+    _COMBO_LIST = {
+        'HallID': 'get_halls',
+        'ChiefID': 'get_chiefs',
+    }
+
+    def get_halls(self):
+        """Получить все помещения"""
+        return {row['IDHall']: row['HallName'] for row in self.model._fields['HallID'].select_all()}
+
+    def get_chiefs(self):
+        """Получить всех ответственных"""
+        return {row['IDChief']: row['Chief'] for row in self.model._fields['ChiefID'].select_all()}
