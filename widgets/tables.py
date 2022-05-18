@@ -123,7 +123,7 @@ class BuildingTable(BaseTable):
         'Материал', 'Износ (%)', 'Этажей', 'Фото',
         'Информация',
     )
-    # _ALIGN = ('c', 'r', 'r', 'r', 'l', 'l')
+    _ALIGN = ('l', 'r', 'l', 'c', 'r', 'c', 'r', 'r', 'r')
     _INDEXES = {
         '#1': 'BuildingName',
         '#2': 'Land',
@@ -149,10 +149,6 @@ class BuildingTable(BaseTable):
     }
     # Отображение полей БД в человекочитаемом виде
     _DISPLAY_FIELDS = {
-        # 'Advertisement': {
-        #     False: 'нет',
-        #     True: 'да',
-        # },
         'Picture': {
             None: 'нет',
             '': 'нет',
@@ -194,13 +190,7 @@ class DepartmentTable(BaseTable):
             '#4': 'OfficeDean',
         }
     _COLUMNS = {
-        # '#1': {'width': 70, 'anchor': tk.E},
-        # '#2': {'width': 50, 'anchor': tk.E},
         '#3': {'width': 120, 'anchor': tk.CENTER},
-        # '#4': {'width': 110, 'anchor': tk.E},
-        # '#5': {'width': 120},
-        # '#6': {'width': 130, 'anchor': tk.E},
-        # '#9': {'width': 80, 'anchor': tk.E},
     }
     _DISPLAY_FIELDS = {}
 
@@ -210,9 +200,7 @@ class MaterialTable(BaseTable):
     _INDEXES = {
             '#1': 'Material',
         }
-    _COLUMNS = {
-        # '#1': {'width': 200, 'anchor': tk.E},
-    }
+    _COLUMNS = {}
     _DISPLAY_FIELDS = {}
 
 
@@ -294,8 +282,5 @@ class ChiefTable(BaseTable):
         '#1': {'width': 130},
         '#2': {'width': 150},
         '#3': {'width': 100, 'anchor': tk.CENTER},
-        # '#4': {'width': 120},
-        # '#5': {'width': 80, 'anchor': tk.E},
-        # '#6': {'width': 80, 'anchor': tk.E},
     }
     _DISPLAY_FIELDS = {}

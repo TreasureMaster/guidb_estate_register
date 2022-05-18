@@ -21,3 +21,4 @@ from .buttonentry import FilenameEntry
 from .scrolledlistbox import ScrolledListboxFrame
 from .resizableimages import ModuleImage
 from .customboxes import RadioBox, ButtonsBox
+from .radiobox import PrinterOrientationRadioBox
