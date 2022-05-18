@@ -7,7 +7,7 @@ from widgets import (
     AdminTable,
     LabeledEntry,
     ToggledEntry,
-    # TreatyTable,
+    BuildingTable,
 )
 
 from .printerwindow import PrinterDialog
@@ -95,19 +95,15 @@ class BaseSearchWindow:
         return self.temp_filename
 
 
-class TreatySearchWindow(BaseSearchWindow):
-    """Окно поиска договора"""
-    _APPTITLE = 'Поиск договора'
-    # _TABLE = TreatyTable
+class BuildingSearchWindow(BaseSearchWindow):
+    """Окно поиска здания"""
+    _APPTITLE = 'Поиск здания'
+    _TABLE = BuildingTable
     _ALL_WIDTH = 25
     _CONTROL_WIDGETS = {
-            'customer.Customer': {
-                'text': 'По арендатору',
-                'widget': ToggledEntry
-            },
-            'employees.Employee': {
-                'text': 'По ответственному',
-                'widget': ToggledEntry
+            'buildings.BuildingName': {
+                'text': 'Наименование здания:',
+                'widget': LabeledEntry,
             },
             '!separator_1': 5,
             '!button_1': {

@@ -32,7 +32,7 @@ from .editwindows import (
     HallEditWindow,
     UnitEditWindow,
 )
-from .searchwindows import TreatySearchWindow, AdminSearchWindow
+from .searchwindows import BuildingSearchWindow, AdminSearchWindow
 from .printerwindow import PrinterDialog
 
 
@@ -140,7 +140,7 @@ class BuildingMainWindow(BaseMainWindow):
     _MODEL = BuildingModel
     _TABLE = BuildingTable
     _EDIT_WINDOW = BuildingEditWindow
-    # _SEARCH_WINDOW = TreatySearchWindow
+    _SEARCH_WINDOW = BuildingSearchWindow
     _ALL_WIDTH = 25
     _CONTROL_WIDGETS = {
             '!button_1': {
